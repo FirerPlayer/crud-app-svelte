@@ -4,15 +4,16 @@
 	import Button from '@smui/button';
 	import Select, { Option } from '@smui/select';
 	import IconButton from '@smui/icon-button';
-	import { Label } from '@smui/common';
+	import { Icon, Label } from '@smui/common';
+	import { goto } from '$app/navigation';
 
-	export let items: any[] = [];
+	export let items: any = [];
 	export let loaded = false;
 	let rowsPerPage = 10;
 	let currentPage = 0;
 
 	$: start = currentPage * rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, items.length);
+	$: end = start + rowsPerPage;
 	$: slice = items.slice(start, end);
 	$: lastPage = Math.max(Math.ceil(items.length / rowsPerPage) - 1, 0);
 
@@ -30,7 +31,7 @@
 	}
 </script>
 
-<DataTable table$aria-label="User list" style="width: 100%;">
+<DataTable table$aria-label="User list" style="width: fit-content;">
 	<Head>
 		<Row>
 			<Cell numeric>ID</Cell>
@@ -50,8 +51,16 @@
 				>
 				<Cell>{item.createdAt}</Cell>
 				<Cell>
-					<a href={`/post/${item.id}`}>Edit</a>
-					<Button on:click={() => deletePost(item.id)}>Delete</Button>
+					<IconButton
+						on:click={() => {
+							goto(`post/${item.id}`);
+						}}
+						class="material-icons"
+						title="Edit">edit</IconButton
+					>
+					<IconButton on:click={() => deletePost(item.id)} class="material-icons" title="Delete"
+						>delete</IconButton
+					>
 				</Cell>
 			</Row>
 		{/each}
